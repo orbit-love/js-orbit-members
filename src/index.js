@@ -8,7 +8,7 @@ class OrbitMembers {
       orbitWorkspaceId,
       orbitApiKey,
       userAgent
-    );
+    )
   }
 
   setCredentials(orbitWorkspaceId, orbitApiKey, userAgent) {
@@ -17,45 +17,80 @@ class OrbitMembers {
       !(orbitApiKey || process.env.ORBIT_API_KEY)
     ) {
       throw new Error(
-        "You must provide and Orbit Workspace ID and Orbit API Key"
-      );
+        'You must provide and Orbit Workspace ID and Orbit API Key'
+      )
     }
     return {
       orbitWorkspaceId: orbitWorkspaceId || process.env.ORBIT_WORKSPACE_ID,
       orbitApiKey: orbitApiKey || process.env.ORBIT_API_KEY,
-      userAgent: userAgent || `js-orbit-members/${pkg.version}`,
-    };
+      userAgent: userAgent || `js-orbit-members/${pkg.version}`
+    }
   }
 
   async createMember(data) {
     try {
-      if (!data) throw new Error("You must provide data");
-      if (typeof data !== "object") throw new Error("data must be an object");
+      if (!data) throw new Error('You must provide data')
+      if (typeof data !== 'object') throw new Error('data must be an object')
       const response = await this.api(
         this.credentials,
-        "POST",
-        "/members",
+        'POST',
+        '/members',
         null,
         data
-      );
-      return response;
+      )
+      return response
     } catch (error) {
-      throw new Error(error);
+      throw new Error(error)
     }
   }
 
   updateMember(data) {
-    return this.createMember(data);
+    return this.createMember(data)
+  }
+
+  async listMembers(query = {}) {
+    try {
+      const response = await this.api(
+        this.credentials,
+        'GET',
+        '/members',
+        query
+      )
+
+      const nextPage = getNextPageFromURL(response?.links?.next)
+      return {
+        data: response.data,
+        included: response.included,
+        items: response.data.length,
+        nextPage
+      }
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  async getMember(memberId) {
+    try {
+      if (!memberId) throw new Error('You must provide an memberId')
+      const response = await this.api(
+        this.credentials,
+        'GET',
+        `/members/${memberId}`
+      )
+      return response
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
   async api(credentials, method, endpoint, query = {}, data = {}) {
     try {
       if (!credentials || !method || !endpoint)
-        throw new Error("You must pass a client, method, and endpoint");
+        throw new Error('You must pass a client, method, and endpoint')
 
       const url = `https://app.orbit.love/api/v1/${
         credentials.orbitWorkspaceId
-      }${endpoint}?${qs.encode(query)}`;
+      }${endpoint}?${qs.encode(query)}`
 
       const response = await axios({
         method,
@@ -63,15 +98,23 @@ class OrbitMembers {
         data,
         headers: {
           Authorization: `Bearer ${credentials.orbitApiKey}`,
-          "User-Agent": credentials.userAgent,
-        },
-      });
+          'User-Agent': credentials.userAgent
+        }
+      })
 
-      return response?.data;
+      return response?.data
     } catch (err) {
-      throw new Error(err);
+      throw new Error(err)
     }
   }
 }
+
+function getNextPageFromURL(url) {
+  if (!url) return null
+  const search = url.split('?')[1]
+  const page = +qs.decode(search).page
+  return page
+}
+
 
 module.exports = OrbitMembers;
