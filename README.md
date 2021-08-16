@@ -1,0 +1,10 @@
+- [ ] Add identity to member
+- [ ] Remove identity from member
+- [x] List members in a workspace
+- [x] Create or update a member
+    - [x] Create
+    - [x] Update
+- [x] Get a member
+- [x] Update a member
+- [ ] Delete a member
+- [ ] Find a member by an identity

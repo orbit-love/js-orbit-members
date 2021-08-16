@@ -44,8 +44,38 @@ class OrbitMembers {
     }
   }
 
-  updateMember(data) {
-    return this.createMember(data)
+  updateMember(memberId, data) {
+    if (memberId && data) {
+      return this.updateMemberWithId(memberId, data)
+    } else {
+      data = memberId
+      return this.updateMemberWithoutId(data)
+    }
+  }
+
+  async updateMemberWithId(memberId, data) {
+    try {
+      if (!memberId)
+        throw new Error('You must provide a memberId as the first parameter')
+      if (!data)
+        throw new Error(
+          'You must provide a data object as the second parameter'
+        )
+      await this.api(
+        this.credentials,
+        'PUT',
+        `/members/${memberId}`,
+        null,
+        data
+      )
+      return `member ${memberId} updated`
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  async updateMemberWithoutId(data) {
+    this.createMember(data)
   }
 
   async listMembers(query = {}) {

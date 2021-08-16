@@ -122,19 +122,6 @@ describe('OrbitMembers createMember', () => {
   })
 })
 
-describe('OrbitMembers updateMember', () => {
-  let sut
-  beforeEach(() => {
-    sut = new OrbitMembers('1', '2')
-  })
-
-  it('calls createMember', () => {
-    const spy = jest.spyOn(sut, 'createMember')
-    sut.updateMember({})
-    expect(spy).toHaveBeenCalledTimes(1)
-  })
-})
-
 describe('OrbitMembers listMembers', () => {
   let sut
   beforeEach(() => {
@@ -218,6 +205,88 @@ describe('OrbitMembers getMember', () => {
     })
 
     await expect(sut.getMember('123')).rejects.toThrow(errorMessage)
+  })
+})
+
+describe('OrbitMembers updateMember', () => {
+  let sut
+  beforeEach(() => {
+    sut = new OrbitMembers('1', '2')
+  })
+
+  it('given one argument which is an object, call updateMemberWithoutId', () => {
+    const spy = jest.spyOn(sut, 'updateMemberWithoutId')
+    sut.updateMember({})
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('given a memberId and an object, call updateMemberWithId', () => {
+    const spy = jest.spyOn(sut, 'updateMemberWithId')
+    sut.updateMember('123', {})
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('OrbitMembers updateMemberWithoutId', () => {
+  it('calls createMember', () => {
+    const sut = new OrbitMembers('1', '2')
+    const spy = jest.spyOn(sut, 'createMember')
+    sut.updateMember({})
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('OrbitMembers updateMemberWithId', () => {
+  let sut
+  beforeEach(() => {
+    sut = new OrbitMembers('1', '2')
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  it('if parameters are missing, throws', async () => {
+    await expect(sut.updateMemberWithId()).rejects.toThrow(
+      'You must provide a memberId as the first parameter'
+    )
+    await expect(sut.updateMemberWithId('1')).rejects.toThrow(
+      'You must provide a data object as the second parameter'
+    )
+  })
+
+  it('calls axios correctly', async () => {
+    axios.mockResolvedValueOnce({})
+
+    await sut.updateMember('123', { dataKey: 'dataValue' })
+
+    const firstCall = axios.mock.calls[0][0]
+    const path = url
+      .parse(firstCall.url, true)
+      .path.split('v1')[1]
+      .split('?')[0]
+    const memberId = path.split('/')[3]
+
+    expect(memberId).toBe('123')
+  })
+
+  it('returns success message correctly', async () => {
+    axios.mockResolvedValueOnce({})
+
+    const response = await sut.updateMember('123', {
+      dataKey: 'dataValue'
+    })
+
+    expect(response).toBe('member 123 updated')
+  })
+
+  it('when there is an error, return error', async () => {
+    const errorMessage = 'Network Error'
+    axios.mockImplementationOnce(() => {
+      return Promise.reject(new Error(errorMessage))
+    })
+
+    await expect(sut.updateMember('1', {})).rejects.toThrow(errorMessage)
   })
 })
 
