@@ -1,0 +1,28 @@
+{
+  "name": "@orbit-love/members",
+  "version": "0.0.1",
+  "description": "Orbit API client for Node.js. API support for member operations.",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "orbit",
+    "member",
+    "integration",
+    "helper",
+    "library"
+  ],
+  "author": "Kevin Lewis",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "jest": "^27.0.6",
+    "prettier": "^2.3.2"
+  },
+  "dependencies": {
+    "axios": "^0.21.1"
+  }
+}
