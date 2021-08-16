@@ -27,6 +27,27 @@ class OrbitMembers {
     };
   }
 
+  async createMember(data) {
+    try {
+      if (!data) throw new Error("You must provide data");
+      if (typeof data !== "object") throw new Error("data must be an object");
+      const response = await this.api(
+        this.credentials,
+        "POST",
+        "/members",
+        null,
+        data
+      );
+      return response;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  updateMember(data) {
+    return this.createMember(data);
+  }
+
   async api(credentials, method, endpoint, query = {}, data = {}) {
     try {
       if (!credentials || !method || !endpoint)

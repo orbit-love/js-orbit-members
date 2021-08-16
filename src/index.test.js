@@ -83,3 +83,32 @@ describe("OrbitMembers api", () => {
     expect(url.parse(firstCall.url, true).query.queryKey).toBe("queryValue");
   });
 });
+
+describe("OrbitMembers createMember", () => {
+  let sut;
+  beforeEach(() => {
+    sut = new OrbitMembers("1", "2");
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it("given no data, throws", async () => {
+    await expect(sut.createMember()).rejects.toThrow("You must provide data");
+  });
+
+  it("given data is not an object, throws", async () => {
+    const errorText = "data must be an object";
+    await expect(sut.createMember(123)).rejects.toThrow(errorText);
+    await expect(sut.createMember(true)).rejects.toThrow(errorText);
+    await expect(sut.createMember("string")).rejects.toThrow(errorText);
+  });
+
+  it("returns data in the correct format", async () => {
+    const toReturn = { data: { data: { prop: "val" } } };
+    axios.mockResolvedValue();
+    const response = await sut.createMember({});
+    expect(response).toMatchObject(toReturn.data);
+  });
+});
