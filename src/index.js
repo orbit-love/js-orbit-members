@@ -113,6 +113,25 @@ class OrbitMembers {
     }
   }
 
+  async findMember(query) {
+    try {
+      if (!query) throw new Error('You must provide a query')
+      if (!query.source || (!query.username && !query.uid && !query.email))
+        throw new Error(
+          'You must provide a source and one of username/uid/email'
+        )
+      const response = await this.api(
+        this.credentials,
+        'GET',
+        '/members/find',
+        query
+      )
+      return response
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   async api(credentials, method, endpoint, query = {}, data = {}) {
     try {
       if (!credentials || !method || !endpoint)

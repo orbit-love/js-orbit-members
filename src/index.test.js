@@ -112,7 +112,7 @@ describe('OrbitMembers createMember', () => {
     expect(response).toMatchObject(toReturn.data)
   })
 
-  it('when there is an error, return error', async () => {
+  it('given an error, return error', async () => {
     const errorMessage = 'Network Error'
     axios.mockImplementationOnce(() => {
       return Promise.reject(new Error(errorMessage))
@@ -162,7 +162,7 @@ describe('OrbitMembers listMembers', () => {
     expect(response.nextPage).toBeNull()
   })
 
-  it('when there is an error, return error', async () => {
+  it('given an error, return error', async () => {
     const errorMessage = 'Network Error'
     axios.mockImplementationOnce(() => {
       return Promise.reject(new Error(errorMessage))
@@ -198,7 +198,7 @@ describe('OrbitMembers getMember', () => {
     expect(response.included).not.toBeNull()
   })
 
-  it('when there is an error, return error', async () => {
+  it('given an error, return error', async () => {
     const errorMessage = 'Network Error'
     axios.mockImplementationOnce(() => {
       return Promise.reject(new Error(errorMessage))
@@ -280,13 +280,56 @@ describe('OrbitMembers updateMemberWithId', () => {
     expect(response).toBe('member 123 updated')
   })
 
-  it('when there is an error, return error', async () => {
+  it('given an error, return error', async () => {
     const errorMessage = 'Network Error'
     axios.mockImplementationOnce(() => {
       return Promise.reject(new Error(errorMessage))
     })
 
     await expect(sut.updateMember('1', {})).rejects.toThrow(errorMessage)
+  })
+})
+
+describe('OrbitMembers findMember', () => {
+  let sut
+  beforeEach(() => {
+    sut = new OrbitMembers('1', '2')
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  it('if query is missing, throws', async () => {
+    await expect(sut.findMember()).rejects.toThrow('You must provide a query')
+  })
+
+  it('if required params are missing, throws', async () => {
+    const errorText = 'You must provide a source and one of username/uid/email'
+    await expect(sut.findMember({})).rejects.toThrow(errorText)
+    await expect(sut.findMember({ prop: 'value' })).rejects.toThrow(errorText)
+    await expect(sut.findMember({ source: 'value' })).rejects.toThrow(errorText)
+  })
+
+  it('returns data in correct format', async () => {
+    const toReturn = { data: { data: { id: 'id-val' }, included: [] } }
+    axios.mockResolvedValueOnce(toReturn)
+
+    const response = await sut.findMember({ source: '1', uid: '2' })
+
+    expect(response.data.id).toBe('id-val')
+    expect(response.included).not.toBeNull()
+  })
+
+  it('given an error, return error', async () => {
+    const errorMessage = 'Network Error'
+    axios.mockImplementationOnce(() => {
+      return Promise.reject(new Error(errorMessage))
+    })
+
+    await expect(sut.findMember({ source: '1', uid: '2' })).rejects.toThrow(
+      errorMessage
+    )
   })
 })
 

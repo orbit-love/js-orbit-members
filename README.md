@@ -7,4 +7,4 @@
 - [x] Get a member
 - [x] Update a member
 - [ ] Delete a member
-- [ ] Find a member by an identity
+- [x] Find a member by an identity
