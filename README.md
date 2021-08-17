@@ -153,7 +153,7 @@ You can omit `memberId` and provide only the data object, but you must then prov
 ```js
 const memberId = 'janesmith04'
 
-orbitActivities.deleteMember(memberId).then(data => {
+orbitMembers.deleteMember(memberId).then(data => {
     console.log(data)
 }).catch(error => {
     console.error(error)
