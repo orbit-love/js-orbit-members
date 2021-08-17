@@ -1,10 +1,14 @@
 {
   "name": "@orbit-love/members",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Orbit API client for Node.js. API support for member operations.",
   "main": "./src/index.js",
   "scripts": {
     "test": "jest"
+  },
+  "repository": {
+    "type": "GitHub",
+    "url": "https://github.com/orbit-love/js-orbit-members"
   },
   "keywords": [
     "orbit",
