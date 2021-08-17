@@ -1,5 +1,5 @@
-- [ ] Add identity to member
-- [ ] Remove identity from member
+- [x] Add identity to member
+- [x] Remove identity from member
 - [x] List members in a workspace
 - [x] Create or update a member
     - [x] Create

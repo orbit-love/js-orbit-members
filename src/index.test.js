@@ -333,6 +333,160 @@ describe('OrbitMembers findMember', () => {
   })
 })
 
+describe('OrbitMembers addIdentity', () => {
+  let sut
+  beforeEach(() => {
+    sut = new OrbitMembers('1', '2')
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  it('given required parameters are missing, throws', async () => {
+    const errorText = 'You must provide a memberId string and data object'
+    await expect(sut.addIdentity()).rejects.toThrow(errorText)
+    await expect(sut.addIdentity('123')).rejects.toThrow(errorText)
+  })
+
+  it('given required parameters are the wrong types, throws', async () => {
+    const memberIdError = 'You must provide memberId as a string'
+    const dataError = 'You must provide data as an object'
+
+    await expect(sut.addIdentity(123, {})).rejects.toThrow(memberIdError)
+    await expect(sut.addIdentity(true, {})).rejects.toThrow(memberIdError)
+    await expect(sut.addIdentity({}, {})).rejects.toThrow(memberIdError)
+    await expect(sut.addIdentity('123', 123)).rejects.toThrow(dataError)
+    await expect(sut.addIdentity('123', true)).rejects.toThrow(dataError)
+    await expect(sut.addIdentity('123', 'string')).rejects.toThrow(dataError)
+  })
+
+  it('given missing source, throws', async () => {
+    await expect(sut.addIdentity('123', {})).rejects.toThrow(
+      'You must provide a source'
+    )
+  })
+
+  it('returns data in the correct format', async () => {
+    const toReturn = { data: { data: { prop: 'val' } } }
+    axios.mockResolvedValue(toReturn)
+    const response = await sut.addIdentity('123', { source: '123' })
+    expect(response).toMatchObject(toReturn.data)
+  })
+
+  it('given an error, return error', async () => {
+    const errorMessage = 'Network Error'
+    axios.mockImplementationOnce(() => {
+      return Promise.reject(new Error(errorMessage))
+    })
+
+    await expect(sut.addIdentity('123', { source: '123' })).rejects.toThrow(
+      errorMessage
+    )
+  })
+})
+
+describe('OrbitMembers removeIdentity', () => {
+  let sut
+  beforeEach(() => {
+    sut = new OrbitMembers('1', '2')
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  it('given required parameters are missing, throws', async () => {
+    const errorText = 'You must provide a memberId string and data object'
+    await expect(sut.removeIdentity()).rejects.toThrow(errorText)
+    await expect(sut.removeIdentity('123')).rejects.toThrow(errorText)
+  })
+
+  it('given required parameters are the wrong types, throws', async () => {
+    const memberIdError = 'You must provide memberId as a string'
+    const dataError = 'You must provide data as an object'
+
+    await expect(sut.removeIdentity(123, {})).rejects.toThrow(memberIdError)
+    await expect(sut.removeIdentity(true, {})).rejects.toThrow(memberIdError)
+    await expect(sut.removeIdentity({}, {})).rejects.toThrow(memberIdError)
+    await expect(sut.removeIdentity('123', 123)).rejects.toThrow(dataError)
+    await expect(sut.removeIdentity('123', true)).rejects.toThrow(dataError)
+    await expect(sut.removeIdentity('123', 'string')).rejects.toThrow(dataError)
+  })
+
+  it('given missing source, throws', async () => {
+    await expect(sut.removeIdentity('123', {})).rejects.toThrow(
+      'You must provide a source'
+    )
+  })
+
+  it('returns data in the correct format', async () => {
+    axios.mockResolvedValueOnce({})
+    const response = await sut.removeIdentity('123', { source: '123' })
+    expect(response).toBe('identity on member 123 removed')
+  })
+
+  it('given an error, return error', async () => {
+    const errorMessage = 'Network Error'
+    axios.mockImplementationOnce(() => {
+      return Promise.reject(new Error(errorMessage))
+    })
+
+    await expect(sut.removeIdentity('123', { source: '123' })).rejects.toThrow(
+      errorMessage
+    )
+  })
+})
+
+describe('OrbitMembers deleteMember', () => {
+  let sut
+  beforeEach(() => {
+    sut = new OrbitMembers('1', '2')
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  it('given memberId is missing, throws', async () => {
+    await expect(sut.deleteMember()).rejects.toThrow(
+      'You must provide a memberId'
+    )
+  })
+
+  it('calls axios correctly', async () => {
+    axios.mockResolvedValueOnce({})
+
+    await sut.deleteMember('123')
+
+    const firstCall = axios.mock.calls[0][0]
+    const path = url
+      .parse(firstCall.url, true)
+      .path.split('v1')[1]
+      .split('?')[0]
+    const memberId = path.split('/')[3]
+
+    expect(memberId).toBe('123')
+  })
+
+  it('returns data in the correct format', async () => {
+    axios.mockResolvedValueOnce({})
+    const response = await sut.deleteMember('123')
+    expect(response).toBe('member 123 deleted')
+  })
+
+  it('given an error, return error', async () => {
+    const errorMessage = 'Network Error'
+    axios.mockImplementationOnce(() => {
+      return Promise.reject(new Error(errorMessage))
+    })
+
+    await expect(sut.deleteMember('123', { source: '123' })).rejects.toThrow(
+      errorMessage
+    )
+  })
+})
+
 function setMembersResponse(params) {
   const next = params?.nextPage
     ? `https://app.orbit.love/api/v1/workspaceid/members?filters=true&items=25&page=${params.nextPage}&sort=occurred_at`

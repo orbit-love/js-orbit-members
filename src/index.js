@@ -132,6 +132,60 @@ class OrbitMembers {
     }
   }
 
+  async addIdentity(memberId, data) {
+    try {
+      if (!memberId || !data)
+        throw new Error('You must provide a memberId string and data object')
+      if (typeof memberId !== 'string')
+        throw new Error('You must provide memberId as a string')
+      if (typeof data !== 'object')
+        throw new Error('You must provide data as an object')
+      if (!data.source) throw new Error('You must provide a source')
+      const response = await this.api(
+        this.credentials,
+        'POST',
+        `/members/${memberId}/identities`,
+        null,
+        data
+      )
+      return response
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  async removeIdentity(memberId, data) {
+    try {
+      if (!memberId || !data)
+        throw new Error('You must provide a memberId string and data object')
+      if (typeof memberId !== 'string')
+        throw new Error('You must provide memberId as a string')
+      if (typeof data !== 'object')
+        throw new Error('You must provide data as an object')
+      if (!data.source) throw new Error('You must provide a source')
+      await this.api(
+        this.credentials,
+        'DELETE',
+        `/members/${memberId}/identities`,
+        null,
+        data
+      )
+      return `identity on member ${memberId} removed`
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  async deleteMember(memberId) {
+    try {
+      if (!memberId) throw new Error('You must provide a memberId')
+      await this.api(this.credentials, 'DELETE', `/members/${memberId}`)
+      return `member ${memberId} deleted`
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   async api(credentials, method, endpoint, query = {}, data = {}) {
     try {
       if (!credentials || !method || !endpoint)
