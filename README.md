@@ -61,7 +61,7 @@ orbitMembers.listMembers(query).then(data => {
 
 `options` is not a required parameter, but can include any query parameter shown in our API reference.
 
-[List members in a workspace API reference](https://docs.orbit.love/reference/get_-workspace-id-members)
+[List members in a workspace API reference](https://docs.orbit.love/reference/get_-workspace-slug-members)
 </details>
 
 <details>
@@ -77,7 +77,7 @@ getMember(memberId).then(data => {
 })
 ```
 
-[Get a member API reference](https://docs.orbit.love/reference/get_-workspace-id-members-id)
+[Get a member API reference](https://docs.orbit.love/reference/get_-workspace-slug-members-member-slug)
 </details>
 
 <details>
@@ -98,7 +98,7 @@ orbitMembers.findMember(query).then(data => {
 
 Provide a source and one of username/uid/email params to return a member with that identity, if one exists. Common values for `source` include `github`, `twitter`, and `email`.
 
-[Fine a member by an identity API reference](https://docs.orbit.love/reference/get_-workspace-id-members-find)
+[Fine a member by an identity API reference](https://docs.orbit.love/reference/get_-workspace-slug-members-find)
 </details>
 
 <details>
@@ -121,7 +121,7 @@ orbitMembers.createMember(data).then(data => {
 
 ```
 
-[Create a member API reference](https://docs.orbit.love/reference/post_-workspace-id-members)
+[Create a member API reference](https://docs.orbit.love/reference/post_-workspace-slug-members)
 </details>
 
 <details>
@@ -142,9 +142,9 @@ orbitMembers.updateMember(memberId, data).then(data => {
 
 You can omit `memberId` and provide only the data object, but you must then provide an identity object.
 
-[Update a member with memberID API Reference](https://docs.orbit.love/reference/put_-workspace-id-members-id)
+[Update a member with memberID API Reference](https://docs.orbit.love/reference/put_-workspace-slug-members-member-slug)
 
-[Update a member without memberId API reference](https://docs.orbit.love/reference/post_-workspace-id-members)
+[Update a member without memberId API reference](https://docs.orbit.love/reference/post_-workspace-slug-members)
 </details>
 
 <details>
@@ -160,7 +160,7 @@ orbitMembers.deleteMember(memberId).then(data => {
 })
 ```
 
-[Delete a member API reference](https://docs.orbit.love/reference/delete_-workspace-id-members-id)
+[Delete a member API reference](https://docs.orbit.love/reference/delete_-workspace-slug-members-member-slug)
 
 </details>
 
